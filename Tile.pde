@@ -4,23 +4,24 @@
 // TODO: Gasit un mod de a determina si viteza in mod automat in functie de 
 // TODO: nr de frame-uri si size
 
+
 class Tile {
   int x, y;
   int _color = 0;
+  
   boolean isHovered;
-  PImage sprite;
-  PImage frame;
   
-  static final int SIZE = 100;
-  static final int SPRITE_FRAME_SIZE = 100; 
-  static final int SPRITE_TOTAL_FRAMES = 25;
-  static final int SPEED = 5;
+  Frames frames;
   
-  Tile(int x, int y, PImage sprite) {
+  
+  Tile(
+    int x, 
+    int y,
+    Frames frames
+  ) {
     this.x = x;
     this.y = y;
-    this.sprite = sprite;
-    
+    this.frames = frames;
   }
   
   void updateParams() {
@@ -31,9 +32,9 @@ class Tile {
   private void updateHoverStatus() {
     if(
       mouseX >= this.x &&
-      mouseX < this.x + Tile.SIZE &&
+      mouseX < this.x + frames.tileSize &&
       mouseY >= this.y &&
-      mouseY < this.y + Tile.SIZE
+      mouseY < this.y + frames.tileSize
     ) {
       this.isHovered = true;
     } else {
@@ -43,9 +44,11 @@ class Tile {
   
   private void updateColor() {
     if(this.isHovered && this._color <= 255) {
-      this._color += Tile.SPEED;
-    } else if(this._color >= 0) {
-      this._color -= Tile.SPEED; 
+      // TODO: Probabil aici inainte sa fac adunarile/scaderile
+      // TODO: trebuie vazut cat mai trebuie adunat din viteza ca sa nu dea peste.
+      this._color += this.frames.speed;
+    } else if(this._color > 0) {
+      this._color -= this.frames.speed; 
     }
   }
   
@@ -55,21 +58,13 @@ class Tile {
     int frameIndex = (int) map( //<>//
       this._color,
       0, 255,
-      0, SPRITE_TOTAL_FRAMES
+      0, frames.usableFrames //<>//
     );
     
-    frame = this.sprite.get(
-      0,
-      frameIndex * Tile.SPRITE_FRAME_SIZE,
-      SPRITE_FRAME_SIZE,
-      SPRITE_FRAME_SIZE
+    image(
+      this.frames.get(frameIndex),  //<>//
+      this.x, 
+      this.y
     );
-    
-    //frame.resize(
-    //  Tile.SIZE,
-    //  Tile.SIZE
-    //);
-    
-    image(frame, this.x, this.y);
   }
 }
