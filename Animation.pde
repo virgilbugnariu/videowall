@@ -1,23 +1,19 @@
 class Animation {
-  Sprite sprite;
-
   int totalFrames;
   
   int tileSize;
-  int _speed;
+  int speed;
   int _spriteSize;
   
   PImage spriteSheet;
   
   ArrayList<PImage> frames;
     
-  Animation(
-    Sprite sprite,
-    int tileSize
-  ) {
-    this.sprite = sprite;
-    this.spriteSheet = sprite.load();
+  Animation(PImage spriteSheet, int tileSize, int speed) {
+    this.spriteSheet = spriteSheet;
 
+    this.speed = speed;
+    
     this._spriteSize = this.spriteSheet.width;
     
     this.totalFrames = this.spriteSheet.height / this._spriteSize - 1;
@@ -36,10 +32,6 @@ class Animation {
         
         this.frames.add(currentFrame);
     }
-    
-    
-    this._speed = this.sprite.speed;
-    println(this._speed);
   }
   
   PImage get(int index) {
@@ -50,7 +42,7 @@ class Animation {
     int newPosition;
 
     if (direction.equals("forwards") && currentPosition < 255){
-      newPosition = currentPosition + this._speed;
+      newPosition = currentPosition + this.speed;
       
       if(newPosition > 255) {
         int diff = newPosition - 255;
@@ -58,7 +50,7 @@ class Animation {
       }
       
     } else if(direction.equals("backwards") && currentPosition > 0) {
-      newPosition = currentPosition - this._speed;
+      newPosition = currentPosition - this.speed;
       
       if(newPosition < 0) {
         newPosition = 0;

@@ -1,7 +1,3 @@
-// TODO: Gasit un mod de a determina si viteza in mod automat in functie de 
-// TODO: nr de frame-uri si size
-
-
 class Tile {
   int x, y;
   int position = 0;
