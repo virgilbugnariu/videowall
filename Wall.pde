@@ -1,6 +1,7 @@
 class Wall {
   ArrayList<Tile> tiles;
   Sprite sprite;
+  int tileSize;
   
   /*
    * The Wall class will receive the sprite to be
@@ -13,9 +14,15 @@ class Wall {
    * The Animation class will be instanced only once and every
    * Tile class will use the same reference of the animation frames.
    */
-  Wall(Sprite sprite, int tileSize) {
+  Wall(int tileSize) {
+
+    this.tileSize = tileSize;
+   
+  }
+  
+  void initialize(Sprite sprite) {
     this.sprite = sprite;
-    
+   
     int numberOfTilesPerWidth = (int) width / tileSize;
     int numberOfTilesPerHeight = (int) height / tileSize;
    
@@ -24,18 +31,14 @@ class Wall {
     for(int i = 0; i <= numberOfTilesPerHeight; i++) {
       for(int j = 0; j <= numberOfTilesPerWidth; j++) {
         Tile tile = new Tile(
-          j * tileSize, 
-          i * tileSize,
+          j * this.tileSize, 
+          i * this.tileSize,
           this.sprite.animationFrames
         );
        
         this.tiles.add(tile);
       }
     }
-  }
-  
-  void updateSprite(PImage sprite) {
-    // Maybe implement
   }
   
   void render() {
