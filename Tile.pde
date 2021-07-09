@@ -1,40 +1,63 @@
-// TODO: Extras frame-urile intr-un ArrayList ca sa faca
-// TODO: resize-u si restul calculelor o singura data.
-// TODO: Ar merge determinat numaru de frame-uri si frame size-u automat
 // TODO: Gasit un mod de a determina si viteza in mod automat in functie de 
 // TODO: nr de frame-uri si size
 
 
 class Tile {
   int x, y;
-  int _color = 0;
+  int position = 0;
   
   boolean isHovered;
   
-  Frames frames;
+  Animation animation;
   
   
   Tile(
     int x, 
     int y,
-    Frames frames
+    Animation animation
   ) {
     this.x = x;
     this.y = y;
-    this.frames = frames;
+    this.animation = animation;
+    this.position = 0;
   }
   
-  void updateParams() {
+  
+  void step() {
     this.updateHoverStatus();
-    this.updateColor();
+    this.updatePosition();
   }
   
+  void render() {
+    this.step();
+    
+    int frameIndex = this.convertPositionToFrameIndex(this.position, animation.totalFrames);
+    
+    image(
+      this.animation.get(frameIndex), 
+      this.x, 
+      this.y
+    );
+  }
+  
+  
+  private int convertPositionToFrameIndex(
+    int position,
+    int totalFrames
+  ) {
+   return (int) map(
+      position,
+      0, 255,
+      0, totalFrames
+    );
+  }
+      
   private void updateHoverStatus() {
     if(
       mouseX >= this.x &&
-      mouseX < this.x + frames.tileSize &&
+      mouseX < this.x + animation.tileSize &&
       mouseY >= this.y &&
-      mouseY < this.y + frames.tileSize
+      mouseY < this.y + animation.tileSize
     ) {
       this.isHovered = true;
     } else {
@@ -42,29 +65,15 @@ class Tile {
     }
   }
   
-  private void updateColor() {
-    if(this.isHovered && this._color <= 255) {
-      // TODO: Probabil aici inainte sa fac adunarile/scaderile
-      // TODO: trebuie vazut cat mai trebuie adunat din viteza ca sa nu dea peste.
-      this._color += this.frames.speed;
-    } else if(this._color > 0) {
-      this._color -= this.frames.speed; 
+  private void updatePosition() {
+    String direction = "backwards";
+    
+    if(this.isHovered) {
+      direction = "forwards";
     }
+    
+    this.position = this.animation.getNextPosition(this.position, direction);
+    
   }
   
-  void render() {
-    this.updateParams();
-    
-    int frameIndex = (int) map( //<>//
-      this._color,
-      0, 255,
-      0, frames.usableFrames //<>//
-    );
-    
-    image(
-      this.frames.get(frameIndex),  //<>//
-      this.x, 
-      this.y
-    );
-  }
 }
